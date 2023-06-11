@@ -1,21 +1,29 @@
 package com.example.schoolcalender
-import okhttp3.Cookie
+import android.app.Application
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
+import okhttp3.RequestBody
 import retrofit2.Response
 
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
+
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
-interface QuotesApi {
-    @POST("/WebUntis/j_spring_security_check")
-
-    fun login(@Body userData: UserInfo): Call<UserInfo>
-
+interface QuotesApi{
+    @GET("/WebUntis/?school=BSZ+Wirtschaft+Dresden#/basic/login")
+     fun getcookies(): Call<ResponseBody>
+    @FormUrlEncoded
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+     @POST("/WebUntis/j_spring_security_check")
+    fun login(@Field("school")school:String,@Field ("j_username")username:String,@Field ("j_password") password:String,@Field("token") token:String): Call<ResponseBody>
     @Headers("Content-Type: application/json")
-    @GET("/WebUntis/api/public/timetable/weekly/data?elementType=5&elementId=122&date=2023-04-24")
-    suspend fun getQuotes() : Response<QuoteList>
+    @GET
+    suspend fun getQuotes(@Url strdate:String ) : Response<JsonObject>
+    @Headers("Content-Type: application/json")
+    @GET
+    suspend fun authorizationgetter(@Url strdate:String): Response<JsonPrimitive>
+    @Headers("Content-Type: application/json")
+    @GET
+    suspend fun id(@Url strdate:String ) : Response<JsonObject>
 }
